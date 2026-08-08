@@ -17,10 +17,29 @@ The original Code Composer Studio metadata referenced:
 - XDS110 debug interface;
 - the TI `boostxl_edumkii_joystick` example as the project origin/template.
 
-The original repository also contained CCS-generated build output, local launch settings, startup/system/linker copies and absolute template paths. Those artifacts are intentionally not duplicated here. The MSP432 startup/system/linker support should be supplied from the installed TI SDK/toolchain when a clean portable project configuration is created.
+The original repository also contained CCS-generated build output, local launch settings, startup/system/linker copies and absolute template paths. Those artifacts are intentionally not duplicated here. MSP432 startup/system/linker support is supplied from the declared TI SDK/toolchain during reconstruction.
 
 ## Reproducibility status
 
-A clean build from this reorganized source tree has not yet been independently reproduced. The next engineering step is to create/import a clean MSP432P401R CCS project against the declared SDK, add these application sources, build without relying on user-specific paths, and revalidate on hardware.
+A clean build of the current DFRobot source was independently reproduced on **2026-08-08** using a fresh Ubuntu 22.04 environment with:
 
-No functional source fixes were applied during this repository-structure stage. Known findings from the code audit are documented in [`../../docs/known-limitations.md`](../../docs/known-limitations.md).
+- SimpleLink MSP432P4 SDK `3.40.01.02`;
+- TI ARM Compiler `20.2.7.LTS`.
+
+The application sources, retained LCD driver files and SDK startup/system sources compiled successfully and linked to a non-empty `dfrobot.out` without relying on user-specific absolute paths. No firmware compile/link warnings were observed.
+
+This validates **source/build reproducibility**. The corrected portfolio revision has not been claimed as newly flashed or physically re-tested on the robotic hand.
+
+## Source hardening
+
+Five deterministic audit findings were corrected before the clean build:
+
+- selector GPIO initialization order;
+- P3/P7 selector configuration mismatch;
+- malformed LCD mode/status format strings;
+- joystick calibration-range clamping;
+- FSR calibration-range clamping.
+
+Broader design limitations such as blocking movement routines inside GPIO interrupt handling and the lack of a robust FMA SPI timeout remain intentionally documented rather than silently refactored without hardware validation.
+
+See [`../../docs/known-limitations.md`](../../docs/known-limitations.md) and [`../../docs/reproducibility-status.md`](../../docs/reproducibility-status.md).

@@ -117,8 +117,21 @@ void Buzzer_set(bool on)
 JoystickPWM_t JoystickBuffer_to_pwm(void){
 
     JoystickPWM_t pwm;
-    pwm.pwm_x = SERVO_MIN_US + (((int32_t)JoystickBuffer[0] - Joystick_min) * (SERVO_MAX_US - SERVO_MIN_US)) / (Joystick_max - Joystick_min);
-    pwm.pwm_y = SERVO_MIN_US + (((int32_t)JoystickBuffer[1] - Joystick_min) * (SERVO_MAX_US - SERVO_MIN_US)) / (Joystick_max - Joystick_min);
+    uint16_t joystick_x = JoystickBuffer[0];
+    uint16_t joystick_y = JoystickBuffer[1];
+
+    if(joystick_x < Joystick_min)
+        joystick_x = Joystick_min;
+    else if(joystick_x > Joystick_max)
+        joystick_x = Joystick_max;
+
+    if(joystick_y < Joystick_min)
+        joystick_y = Joystick_min;
+    else if(joystick_y > Joystick_max)
+        joystick_y = Joystick_max;
+
+    pwm.pwm_x = SERVO_MIN_US + (((int32_t)joystick_x - Joystick_min) * (SERVO_MAX_US - SERVO_MIN_US)) / (Joystick_max - Joystick_min);
+    pwm.pwm_y = SERVO_MIN_US + (((int32_t)joystick_y - Joystick_min) * (SERVO_MAX_US - SERVO_MIN_US)) / (Joystick_max - Joystick_min);
 
     return pwm;
 }
@@ -127,7 +140,14 @@ JoystickPWM_t JoystickBuffer_to_pwm(void){
 uint16_t FSR01_to_pwm(uint8_t servo){
 
     uint16_t pwm;
-    pwm = SERVO_MIN_US + (((int32_t)(FSR01_max - FSR01Buffer[servo])) * (SERVO_MAX_US - SERVO_MIN_US)) / (FSR01_max - FSR01_min);
+    uint16_t fsr_value = FSR01Buffer[servo];
+
+    if(fsr_value < FSR01_min)
+        fsr_value = FSR01_min;
+    else if(fsr_value > FSR01_max)
+        fsr_value = FSR01_max;
+
+    pwm = SERVO_MIN_US + (((int32_t)(FSR01_max - fsr_value)) * (SERVO_MAX_US - SERVO_MIN_US)) / (FSR01_max - FSR01_min);
     return pwm;
 }
 

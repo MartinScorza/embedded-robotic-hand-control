@@ -7,7 +7,7 @@ This checklist tracks the minimum evidence and governance required before changi
 - [x] Professional repository structure in place.
 - [x] Generated Code Composer Studio build output excluded.
 - [x] Historical archives and local launch/debug configuration excluded.
-- [x] No tracked absolute `C:/Users/...` or OneDrive paths found in the public-safe tree.
+- [x] No tracked local user-home or cloud-sync paths found in the public-safe tree.
 - [x] No original internal UTC technical PDFs included.
 - [x] No UTC logo asset included.
 - [x] No board-specific UTC register-map / low-level interface source included.

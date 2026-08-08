@@ -10,8 +10,8 @@ This directory contains original, public-safe portfolio diagrams reconstructed f
 
 The diagrams use Mermaid so they render directly on GitHub while remaining reviewable and version-controlled as text.
 
-## Still pending
+## Scope boundary
 
-A complete DFRobot wiring/power schematic should only be added after the final external servo supply, sensor conditioning network and selector-switch wiring are confirmed from the physical setup or reliable original records.
+A complete DFRobot wiring/power schematic is intentionally not included because the preserved public-safe evidence does not fully verify the final external servo supply, sensor-conditioning network and selector-switch wiring.
 
 Vendor artwork and internal UTC technical diagrams are intentionally not copied into this repository.

@@ -35,26 +35,24 @@ jobs:
           "$RUNNER_TEMP/ti-downloads/msp432-sdk.run" --mode unattended --prefix "$RUNNER_TEMP/ti/sdk"
           "$RUNNER_TEMP/ti-downloads/arm-cgt.bin" --mode unattended --prefix "$RUNNER_TEMP/ti/cgt"
 
-          echo "Installed TI files:"
-          find "$RUNNER_TEMP/ti" -maxdepth 3 -type f \( -name armcl -o -name driverlib.h -o -name msp432p401r.cmd \) -print || true
-
       - name: Resolve toolchain paths
         shell: bash
         run: |
           set -euxo pipefail
 
-          ARMCL="$(find "$RUNNER_TEMP/ti/cgt" -type f -name armcl -perm -111 | head -1)"
-          SDK_SOURCE="$(find "$RUNNER_TEMP/ti/sdk" -type d -path '*/source/ti/devices/msp432p4xx' -print | head -1 | sed 's#/ti/devices/msp432p4xx$##')"
+          ARMCL="$(find "$RUNNER_TEMP/ti/cgt" -type f -name armcl -perm -111 -print -quit)"
+          SDK_DEVICE_DIR="$(find "$RUNNER_TEMP/ti/sdk" -type d -path '*/source/ti/devices/msp432p4xx' -print -quit)"
 
           test -n "$ARMCL"
-          test -n "$SDK_SOURCE"
+          test -n "$SDK_DEVICE_DIR"
 
           CGT_ROOT="$(cd "$(dirname "$ARMCL")/.." && pwd)"
+          SDK_SOURCE="${SDK_DEVICE_DIR%/ti/devices/msp432p4xx}"
           SDK_ROOT="$(cd "$SDK_SOURCE/.." && pwd)"
 
-          STARTUP="$(find "$SDK_ROOT/source/ti/devices/msp432p4xx/startup_system_files/ccs" -type f -name startup_msp432p401r_ccs.c | head -1)"
-          SYSTEM="$(find "$SDK_ROOT/source/ti/devices/msp432p4xx/startup_system_files" -type f -name system_msp432p401r.c | head -1)"
-          LINKER_CMD="$(find "$SDK_ROOT" -type f -name msp432p401r.cmd | head -1)"
+          STARTUP="$(find "$SDK_ROOT/source/ti/devices/msp432p4xx/startup_system_files/ccs" -type f -name startup_msp432p401r_ccs.c -print -quit)"
+          SYSTEM="$(find "$SDK_ROOT/source/ti/devices/msp432p4xx/startup_system_files" -type f -name system_msp432p401r.c -print -quit)"
+          LINKER_CMD="$(find "$SDK_ROOT" -type f -name msp432p401r.cmd -print -quit)"
 
           test -f "$STARTUP"
           test -f "$SYSTEM"
@@ -71,6 +69,7 @@ jobs:
             echo "LINKER_CMD=$LINKER_CMD"
           } >> "$GITHUB_ENV"
 
+          echo "Using linker command file: $LINKER_CMD"
           "$ARMCL" --version
 
       - name: Compile DFRobot sources

@@ -88,11 +88,11 @@ void LCD_init(void){//initialization de l'ecran
                                     OPAQUE_TEXT);
     char string[8];
 
-    sprintf(string, "%3u%", PrintMode);
+    sprintf(string, "%3u", PrintMode);
     Graphics_drawString(&g_sContext, (int8_t *)string,
                         AUTO_STRING_LENGTH, 95, 50, OPAQUE_TEXT);
 
-    sprintf(string, "%3u%", ActiveSensor);
+    sprintf(string, "%3u", ActiveSensor);
     Graphics_drawString(&g_sContext, (int8_t *)string,
                         AUTO_STRING_LENGTH, 95, 40, OPAQUE_TEXT);
 }
@@ -200,9 +200,9 @@ void GPIO_init(){
     /*GPIO pour ActiveSensor select: P7.1 et P7.2 */
     P7->SEL0 &= ~(BIT1|BIT2);
     P7->SEL1 &= ~(BIT1|BIT2);
-    P3->DIR  &= ~(BIT1|BIT2);   // inputs
-    P3->REN  |=  (BIT1|BIT2);   // resistance
-    P3->OUT  |=  (BIT1|BIT2);   // pull-up
+    P7->DIR  &= ~(BIT1|BIT2);   // inputs
+    P7->REN  |=  (BIT1|BIT2);   // resistance
+    P7->OUT  |=  (BIT1|BIT2);   // pull-up
 
 }
 
@@ -358,10 +358,10 @@ int main(void)
     MAP_CS_initClockSignal(CS_SMCLK,  CS_DCOCLK_SELECT, CS_CLOCK_DIVIDER_4);   // 48/4  = 12 MHz
     MAP_CS_initClockSignal(CS_ACLK,   CS_REFOCLK_SELECT, CS_CLOCK_DIVIDER_1);  // 32.768 kHz
 
+    GPIO_init();
     ActiveSensor = Read_ActiveSensor();
 
     PWM_init();
-    GPIO_init();
     LCD_init();
 
     switch(ActiveSensor)
@@ -538,7 +538,7 @@ void PORT3_IRQHandler() //interrupcion par le button 3 (EDU MKII) --> il va regl
             PrintMode = 0;
         char string[8];
 
-        sprintf(string, "%3u%", PrintMode);
+        sprintf(string, "%3u", PrintMode);
         Graphics_drawString(&g_sContext, (int8_t *)string,
                             AUTO_STRING_LENGTH, 95, 50, OPAQUE_TEXT);
         P3->IFG &= ~BIT5;

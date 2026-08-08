@@ -1,18 +1,24 @@
-# Reproducibility and static-validation status
+# Reproducibility and validation status
 
-This document records checks performed after the initial portfolio reconstruction. It separates what can be verified without the original hardware from what still requires Code Composer Studio and physical validation.
+This document records checks performed during the portfolio reconstruction. It separates source/build validation from physical hardware evidence.
 
-## Baseline
+## Current public-safe baseline
 
-Portfolio baseline on `main`:
+The repository contains:
 
-- DFRobot application firmware included without functional changes;
-- Python/Tkinter UART interface included;
-- UTC board-specific firmware intentionally withheld pending provenance/redistribution review.
+- DFRobot application firmware;
+- Python/Tkinter UART interface;
+- public-safe architecture/hardware documentation;
+- Texas Instruments LCD support files with original license notices.
 
-## Checks completed without hardware
+The repository intentionally excludes:
 
-### Python interface
+- generated CCS build artifacts and local workspace configuration;
+- internal UTC technical PDFs;
+- UTC branding assets;
+- board-specific UTC register-map / low-level interface source.
+
+## Python interface validation
 
 Local/static validation:
 
@@ -28,50 +34,82 @@ GitHub Actions validation:
 - `import serial`: **PASS**;
 - `python -m py_compile python-interface/robotic_hand_gui.py`: **PASS**.
 
-The first pull-request-triggered CI run completed successfully on 2026-08-08. This validates the host-side Python dependency/syntax path only; it does not validate a physical serial connection or the MSP432 firmware.
+This validates the host-side dependency/syntax path only; it does not validate a physical serial connection.
 
-### Repository hygiene
+## DFRobot firmware hardening
 
-The portfolio tree excludes:
+Five deterministic findings from the original reviewed source were corrected:
 
-- `Debug/` and `Release/` build directories;
-- `.out`, `.obj`, `.map`, `.d` and generated makefile fragments;
-- historical CCS launch files;
-- archive files;
-- the internal UTC technical PDFs;
-- UTC branding assets;
-- board-specific UTC register-map/interface source.
+1. selector GPIO is initialized before `Read_ActiveSensor()`;
+2. selector direction/pull resistors now use P7.1/P7.2 consistently with the read path;
+3. three malformed LCD mode/status format strings were corrected;
+4. joystick inputs are clamped to their configured calibration range before servo mapping;
+5. FSR inputs are clamped to their configured calibration range before servo mapping.
 
-### DFRobot static findings reconfirmed
+The changes intentionally did **not** modify PWM timing, ADC channels, FMA SPI logic, progressive movement architecture, or UTC-hand code.
 
-The following findings are directly observable in the reviewed source:
+## DFRobot clean-build reproduction
 
-1. `Read_ActiveSensor()` is called before `GPIO_init()`, so the selector pins are read before the intended GPIO setup is performed.
-2. The selector setup comment and read path use P7.1/P7.2, but `GPIO_init()` configures direction/pull resistors on P3.1/P3.2. This is a probable port mismatch.
-3. Three LCD formatting calls use `sprintf(..., "%3u%", ...)`, leaving a trailing `%` conversion marker. They should be treated as invalid format strings.
-4. Joystick and FSR mappings calculate directly into unsigned 16-bit return fields without explicitly clamping the sensor input/result to the configured calibration range first.
-5. `PORT1_IRQHandler()` executes progressive movement functions containing blocking delays. The ISR can therefore remain active for an extended period.
-6. The FMA SPI read path waits indefinitely for `RXIFG`; no robust communication timeout is implemented.
+A complete clean build of the corrected DFRobot source was reproduced on **2026-08-08** in a fresh Ubuntu 22.04 GitHub Actions runner.
 
-These items are not presented as newly discovered runtime failures. They are static implementation defects/risks that require controlled correction and, for hardware-facing changes, re-validation.
+Official legacy TI packages used:
 
-## Checks still blocked
+- SimpleLink MSP432P4 SDK `3.40.01.02`;
+- TI ARM Compiler `20.2.7.LTS`.
 
-The following cannot be claimed as reproduced from the current environment:
+Compiled sources:
 
-- clean MSP432 firmware build using the original CCS/SDK toolchain;
-- successful flashing through XDS110;
-- five-channel PWM validation on an oscilloscope;
-- final selector-switch wiring and behavior;
-- ADC boundary behavior on physical joystick/FSR inputs;
-- FMA communication and timeout behavior on hardware;
-- effective end-to-end UTC PI control-loop frequency;
-- `OPEN`, `MID`, `CLOSE`, `DEMO` and `STOP` behavior after any future firmware modifications.
+- `firmware/dfrobot-hand/main.c`;
+- `firmware/dfrobot-hand/Fonctions.c`;
+- retained Crystalfontz/ST7735 LCD driver sources;
+- SDK `system_msp432p401r.c`;
+- SDK `startup_msp432p401r_ccs.c`.
 
-## Next engineering steps
+Linked against:
 
-1. Correct deterministic source defects under Issue #3 without mixing them with repository-structure work.
-2. Reconstruct a clean MSP432P401R CCS project from the declared TI SDK/toolchain.
-3. Build from a fresh workspace and record compiler output/warnings.
-4. Re-test the DFRobot platform on hardware before merging hardware-affecting fixes.
-5. Only after successful re-validation, update the README from “originally demonstrated” to include newly reproduced evidence.
+- TI Graphics Library;
+- MSP432P4 DriverLib;
+- MSP432P401R SDK linker command file;
+- TI C runtime library.
+
+Results:
+
+- source compilation: **PASS**;
+- firmware link: **PASS**;
+- non-empty `dfrobot.out`: **PASS**;
+- user-specific absolute paths required: **no**;
+- firmware compile/link warnings observed: **none**.
+
+Successful clean-build run: GitHub Actions `31231778633`.
+
+The temporary workflow used to perform the legacy build was removed after validation so the portfolio repository does not download hundreds of megabytes of legacy TI tooling on every change.
+
+## Automated repository hygiene
+
+The `Public release guard` runs on pull requests and pushes to `main`. It checks the tracked tree for the configured publication hazards, including generated CCS artifacts, archives, local user paths and UTC material intentionally kept outside the public portfolio scope.
+
+The guard passed after the DFRobot firmware fixes and after removal of the temporary build workflow.
+
+## Physical validation boundary
+
+The following are supported by the **original academic report/presentation and demonstration**, but have not been newly reproduced during the portfolio reconstruction:
+
+- five-channel servo operation on the physical DFRobot hand;
+- joystick, FSR and FMA operating modes on the physical setup;
+- LCD/button/buzzer behavior after the current source fixes;
+- oscilloscope measurement of the current five PWM outputs;
+- physical selector-switch wiring and behavior;
+- UTC `OPEN`, `MID`, `CLOSE`, `DEMO` and `STOP` behavior;
+- effective end-to-end UTC PI control-loop frequency.
+
+Therefore the repository may state that the project was **demonstrated on physical hardware during the original academic work**, and that the current DFRobot source is **clean-build reproduced**, but it must not claim that the corrected portfolio revision has been reflashed or physically revalidated unless that test is performed later.
+
+## Remaining engineering limitations
+
+See [`known-limitations.md`](known-limitations.md). Important remaining items include:
+
+- blocking progressive movement routines inside GPIO interrupt handling;
+- lack of a robust FMA SPI timeout;
+- lack of explicit button debounce;
+- blocking UTC communication/control behavior;
+- nominal rather than measured end-to-end UTC control-loop frequency.

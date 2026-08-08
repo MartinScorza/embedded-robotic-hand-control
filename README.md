@@ -9,9 +9,11 @@ Academic embedded-systems and robotics project developed by a two-student team a
 
 ## Project status
 
-The original academic project included a physical hardware demonstration. This portfolio repository preserves the public-safe parts of that work while separating verified implementation details from limitations and material whose redistribution rights are still under review.
+The original academic project included a physical hardware demonstration. This portfolio repository preserves the public-safe parts of that work while separating verified implementation details from limitations and material whose redistribution rights are intentionally kept outside the public scope.
 
-The DFRobot application firmware and Python interface are included. Board-specific UTC interface firmware is currently withheld because the original project references internal UTC technical documentation.
+The DFRobot application firmware and Python interface are included. Board-specific UTC interface firmware is withheld because the original project references internal UTC technical documentation.
+
+The DFRobot source has also been rebuilt from a clean environment using the original TI legacy toolchain versions. This establishes **source/build reproducibility**, but it does not constitute a new physical hardware validation.
 
 ## Architecture
 
@@ -122,7 +124,7 @@ The reviewed UTC firmware implements newline-terminated text commands at 9600 ba
 ```text
 firmware/
   dfrobot-hand/       Public-safe DFRobot application sources
-  utc-hand/           Publication-status placeholder pending IP review
+  utc-hand/           Publication-status placeholder for withheld low-level material
 python-interface/     Tkinter / pyserial PC interface
 hardware/             Public-safe pin mapping and hardware notes
 docs/                 Architecture, validation and known limitations
@@ -154,18 +156,37 @@ The original CCS project metadata references:
 - SimpleLink MSP432P4 SDK 3.40.01.02;
 - XDS110 debug interface.
 
-A clean MSP432 build from the reorganized public-safe source tree has **not yet been independently reproduced**.
+### Reproduced clean build
 
-Recommended reconstruction workflow:
+A clean build was independently reproduced on **2026-08-08** using a fresh Ubuntu 22.04 GitHub Actions runner with the official TI legacy packages:
+
+- SimpleLink MSP432P4 SDK `3.40.01.02`;
+- TI ARM Compiler `20.2.7.LTS`.
+
+The build compiled the two DFRobot application sources, the retained LCD driver sources, and the SDK startup/system sources. It then linked them against TI Graphics Library, MSP432 DriverLib, the SDK linker command file and libc.
+
+Result:
+
+- source compilation: **PASS**;
+- firmware link: **PASS**;
+- non-empty `dfrobot.out`: **PASS**;
+- user-specific absolute build paths required: **no**;
+- firmware compile/link warnings observed: **none**.
+
+This validates build reproducibility of the current source tree. It does **not** claim that the current portfolio revision was reflashed or physically re-tested on the robotic hand.
+
+### Reconstruction workflow
 
 1. Install Code Composer Studio with MSP432 support.
-2. Install the corresponding SimpleLink MSP432P4 SDK/toolchain.
+2. Install SimpleLink MSP432P4 SDK `3.40.01.02` and TI ARM Compiler `20.2.7.LTS`, or an appropriately validated compatible toolchain.
 3. Create a clean MSP432P401R project.
 4. Add the application sources under `firmware/dfrobot-hand/` and the retained LCD driver files.
-5. Use SDK/toolchain-provided startup, system and linker support rather than user-specific copies from the original workspace.
+5. Use SDK-provided startup, system and linker support rather than user-specific copies from the original workspace.
 6. Select the MSP432P401R target and XDS110 connection.
 7. Clean and build the project.
 8. Verify wiring and external actuator power before flashing or operating the hardware.
+
+See [`docs/reproducibility-status.md`](docs/reproducibility-status.md) for the validation boundary.
 
 ## Running the Python interface
 
@@ -182,13 +203,16 @@ The host-side Python interface is covered by GitHub Actions smoke checks that in
 
 - The DFRobot hand uses commanded servo PWM rather than measured finger-position feedback.
 - FSR/FMA mappings are prototype-specific and are not documented as calibrated force measurements in physical units.
+- Progressive movement routines still contain blocking delays inside GPIO interrupt handling.
+- FMA SPI acquisition still uses a blocking wait without a robust communication timeout.
+- No explicit button debounce mechanism was identified in the DFRobot firmware.
 - PI gains for the UTC hand were tuned for the academic setup; no general performance claim is made.
 - SysTick is configured nominally at 200 Hz, but the complete closed-loop execution rate was not independently measured.
-- Several communication/control operations are blocking.
+- Several UTC communication/control operations are blocking.
 - The reviewed UTC SPI implementation does not provide a complete transfer timeout mechanism.
 - `STOP` is not an asynchronous emergency-stop implementation.
-- Automated MSP432 firmware and hardware-in-the-loop tests are not currently included.
-- Full UTC board-interface source is withheld pending redistribution/provenance review.
+- Automated hardware-in-the-loop tests are not currently included.
+- Full UTC board-interface source is intentionally withheld from the portfolio scope.
 
 See [`docs/known-limitations.md`](docs/known-limitations.md) and [`docs/reproducibility-status.md`](docs/reproducibility-status.md).
 
@@ -209,6 +233,6 @@ See [`AUTHORS.md`](AUTHORS.md).
 
 The DFRobot CCS project originated from a Texas Instruments BOOSTXL-EDUMKII joystick example. This repository retains the TI Crystalfontz/ST7735 LCD support files under their original license notices; MSP432 startup/system/linker support is expected from the TI SDK/toolchain and is not duplicated here.
 
-Board-specific UTC material remains withheld while provenance and redistribution rights are reviewed.
+Internal UTC technical documentation, the low-level board register/protocol implementation and the UTC logo are intentionally excluded from the portfolio repository.
 
 The repository is not currently released under a repository-wide open-source license. See [`NOTICE.md`](NOTICE.md) and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

@@ -1,10 +1,17 @@
 # Hardware diagrams
 
-Original portfolio diagrams to add:
+This directory contains original, public-safe portfolio diagrams reconstructed from the reviewed project code and documentation.
 
-1. DFRobot architecture: sensors → MSP432 → PWM → five servomotors.
-2. UTC architecture: Python GUI → UART → MSP432/PI → SPI → interface board → four actuators.
-3. DFRobot public wiring diagram after power/sensor wiring is confirmed.
-4. PI control-loop diagram.
+## Available diagrams
 
-Do not copy vendor or internal UTC diagrams directly unless redistribution rights are clear.
+1. [`dfrobot-architecture.md`](dfrobot-architecture.md) — joystick / FSR / FMA inputs → MSP432P401R → five direct PWM servo outputs, LCD and buzzer.
+2. [`utc-architecture.md`](utc-architecture.md) — Python GUI → UART → MSP432P401R / PI control → SPI → UTC interface board → four actuators.
+3. [`pi-control-loop.md`](pi-control-loop.md) — public-safe representation of the UTC-hand PI position-control loop.
+
+The diagrams use Mermaid so they render directly on GitHub while remaining reviewable and version-controlled as text.
+
+## Still pending
+
+A complete DFRobot wiring/power schematic should only be added after the final external servo supply, sensor conditioning network and selector-switch wiring are confirmed from the physical setup or reliable original records.
+
+Vendor artwork and internal UTC technical diagrams are intentionally not copied into this repository.

@@ -12,7 +12,7 @@ This checklist tracks the minimum evidence and governance required before changi
 - [x] No UTC logo asset included.
 - [x] No board-specific UTC register-map / low-level interface source included.
 - [x] Automated `Public release guard` enabled in GitHub Actions.
-- [x] First public-release guard execution passed.
+- [x] Public-release guard passes on the current source tree.
 
 ## Attribution
 
@@ -40,21 +40,22 @@ This checklist tracks the minimum evidence and governance required before changi
 - [x] `pip check` passes.
 - [x] `pyserial` import passes.
 - [x] Python GUI source passes `py_compile`.
-- [ ] Reconstruct a clean MSP432P401R project with the documented TI toolchain.
-- [ ] Compile the DFRobot firmware from a clean workspace.
-- [ ] Record compiler warnings/errors.
+- [x] Reconstructed the DFRobot MSP432P401R build in a clean environment with the documented TI legacy SDK/compiler.
+- [x] Compiled the corrected DFRobot firmware from a fresh workspace/runner without user-specific absolute paths.
+- [x] Linked a non-empty `dfrobot.out` image successfully.
+- [x] No firmware compile/link warnings were observed in the successful build.
 
-## Firmware findings requiring review
+## DFRobot deterministic findings
 
-Tracked in Issue #3:
+Resolved and clean-build validated:
 
-- [ ] Initialize selector GPIO before reading the selector.
-- [ ] Resolve the P3/P7 selector configuration mismatch.
-- [ ] Correct remaining malformed LCD format strings.
-- [ ] Clamp joystick mapping to its configured calibration range.
-- [ ] Clamp FSR mapping to its configured calibration range.
+- [x] Initialize selector GPIO before reading the selector.
+- [x] Resolve the P3/P7 selector configuration mismatch.
+- [x] Correct malformed LCD mode/status format strings.
+- [x] Clamp joystick mapping to its configured calibration range.
+- [x] Clamp FSR mapping to its configured calibration range.
 
-Broader architectural findings that should not be silently rewritten without hardware validation:
+Broader architectural findings remain documented rather than silently rewritten:
 
 - blocking progressive movement routines inside GPIO interrupt handling;
 - lack of a robust FMA SPI timeout;
@@ -63,11 +64,17 @@ Broader architectural findings that should not be silently rewritten without har
 
 ## Hardware evidence
 
-- [ ] Confirm the DFRobot selector wiring used in the final setup.
-- [ ] Verify five PWM outputs on hardware if the setup is still available.
-- [ ] Verify representative 50 Hz / 1000–1600 µs servo commands if hardware is available.
-- [ ] Re-test joystick, FSR and FMA operating modes after any firmware fixes.
-- [ ] Keep UTC control-loop frequency described as nominal 200 Hz unless it is measured end-to-end.
+The current portfolio revision has not been newly flashed/re-tested on the original hardware. The original academic documentation remains the evidence for physical operation.
+
+Optional new validation if the hardware is still available:
+
+- [ ] confirm the DFRobot selector wiring used in the final setup;
+- [ ] verify five PWM outputs on hardware;
+- [ ] verify representative 50 Hz / 1000–1600 µs servo commands;
+- [ ] re-test joystick, FSR and FMA modes after the source fixes;
+- [ ] keep UTC control-loop frequency described as nominal 200 Hz unless it is measured end-to-end.
+
+Lack of new physical access does not invalidate the portfolio release as long as the README keeps the distinction between the original hardware demonstration and the newly reproduced clean build.
 
 ## Recruiter-facing media
 
@@ -75,23 +82,26 @@ Tracked in Issue #6.
 
 Minimum desirable set before public release:
 
-- [ ] one short overview GIF/video showing the project hardware;
-- [ ] one clean photo of the DFRobot setup;
-- [ ] one clean public-safe photo or demo of the UTC-hand setup if available;
+- [ ] one short overview GIF/video showing the project hardware, if original footage is available;
+- [ ] one clean photo of the DFRobot setup, if available;
+- [ ] one clean public-safe photo or demo of the UTC-hand setup, if available;
 - [ ] one clean Python GUI screenshot;
 - [ ] original architecture diagrams or equivalent recruiter-readable visual explanation.
 
-If original hardware/media are no longer available, the repository may still be released using the documented original demonstration evidence, but it must not imply that new hardware validation was performed.
+The reviewed project archives do not contain original demo photos/videos apart from the excluded UTC logo. If external original media are unavailable, the repository may still be released with original/redrawn architecture diagrams and the documented original demonstration evidence.
 
 ## Final publication review
 
 Before changing visibility to public:
 
-- [ ] `main` contains only intended public-safe material.
-- [ ] Python CI is green.
-- [ ] Public-release guard is green.
-- [ ] Open Critical items are reviewed and accurately reflected in the README.
-- [ ] README contains no `[TO CONFIRM]` placeholders intended for internal work.
-- [ ] Repository description and topics are set for embedded systems / robotics / biomedical-engineering portfolio discovery.
-- [ ] Repository remains clearly described as an academic robotics prototype, not a clinically validated device.
+- [x] `main` contains only intended public-safe material.
+- [x] Python CI is green.
+- [x] Public-release guard is green.
+- [x] Critical deterministic DFRobot defects identified in Issue #3 are corrected and clean-build validated.
+- [x] README clearly distinguishes original physical demonstration from newly reproduced build evidence.
+- [ ] README contains no internal-work placeholders or stale validation statements.
+- [ ] Repository description and topics are finalized for embedded systems / robotics / biomedical-engineering portfolio discovery.
+- [ ] Lorenzo has repository access or has otherwise been informed/shared the repository as agreed by the team.
+- [ ] Recruiter-facing visual evidence is added where available.
+- [x] Repository remains clearly described as an academic robotics prototype, not a clinically validated device.
 - [ ] Final visibility change to **Public** is intentional.

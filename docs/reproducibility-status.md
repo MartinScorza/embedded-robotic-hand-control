@@ -6,7 +6,6 @@ This document records checks performed after the initial portfolio reconstructio
 
 Portfolio baseline on `main`:
 
-- commit: `c7e5836bb31469e84388d8548e33ba502da9ad89`;
 - DFRobot application firmware included without functional changes;
 - Python/Tkinter UART interface included;
 - UTC board-specific firmware intentionally withheld pending provenance/redistribution review.
@@ -15,9 +14,21 @@ Portfolio baseline on `main`:
 
 ### Python interface
 
+Local/static validation:
+
 - `python -m py_compile python-interface/robotic_hand_gui.py`: **PASS**.
-- The interface declares `pyserial` in `python-interface/requirements.txt`.
-- Full runtime import was not executed in the audit environment because `pyserial` is not installed there; this is an environment dependency, not a syntax failure.
+
+GitHub Actions validation:
+
+- workflow: `Python interface checks`;
+- runner: Ubuntu;
+- Python: 3.11;
+- dependency installation from `python-interface/requirements.txt`: **PASS**;
+- `python -m pip check`: **PASS**;
+- `import serial`: **PASS**;
+- `python -m py_compile python-interface/robotic_hand_gui.py`: **PASS**.
+
+The first pull-request-triggered CI run completed successfully on 2026-08-08. This validates the host-side Python dependency/syntax path only; it does not validate a physical serial connection or the MSP432 firmware.
 
 ### Repository hygiene
 
@@ -59,7 +70,7 @@ The following cannot be claimed as reproduced from the current environment:
 
 ## Next engineering steps
 
-1. Correct deterministic source defects in a dedicated branch without mixing them with repository-structure work.
+1. Correct deterministic source defects under Issue #3 without mixing them with repository-structure work.
 2. Reconstruct a clean MSP432P401R CCS project from the declared TI SDK/toolchain.
 3. Build from a fresh workspace and record compiler output/warnings.
 4. Re-test the DFRobot platform on hardware before merging hardware-affecting fixes.

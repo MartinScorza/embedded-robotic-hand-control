@@ -1,14 +1,32 @@
 # Test and reproducibility plan
 
-The original project was demonstrated on physical hardware but does not contain a reusable automated test suite.
+The original project was demonstrated on physical hardware but did not include a reusable automated firmware test suite.
 
-Recommended next validation steps:
+## Completed during portfolio reconstruction
 
-1. reproduce a clean Code Composer Studio build from a fresh workspace;
-2. record compiler/SDK versions and warnings;
-3. verify all five DFRobot PWM outputs with an oscilloscope;
-4. test joystick/FSR/FMA boundary values;
-5. measure the effective UTC control-loop frequency on hardware if the board is available;
-6. test UART command parsing independently from hardware;
-7. verify failure handling for unavailable SPI devices;
-8. document all results without introducing unmeasured performance claims.
+- [x] Reproduced a clean DFRobot firmware build in a fresh environment.
+- [x] Used the documented legacy TI SDK/compiler versions.
+- [x] Compiled and linked without user-specific absolute paths.
+- [x] Produced a non-empty firmware image.
+- [x] Recorded that no firmware compile/link warnings were observed.
+- [x] Added automated Python-interface smoke checks.
+- [x] Added an automated public-release hygiene guard.
+- [x] Corrected and clean-build validated the deterministic selector/formatting/input-clamping findings.
+
+## Remaining physical / deeper validation
+
+If the original hardware is available:
+
+1. verify all five DFRobot PWM outputs with an oscilloscope;
+2. verify representative 50 Hz / 1000–1600 µs servo commands;
+3. test selector, joystick, FSR and FMA boundary behavior on the physical setup;
+4. confirm LCD mode/status display after the source corrections;
+5. measure the effective UTC control-loop frequency if the board is available.
+
+Independent of hardware availability, future engineering work could also:
+
+- test UART command parsing with a host-side/mock harness;
+- exercise failure handling for unavailable SPI devices;
+- refactor blocking interrupt/control paths only with appropriate regression validation.
+
+All future results should continue to distinguish newly reproduced evidence from behavior reported in the original academic demonstration.

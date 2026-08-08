@@ -1,5 +1,8 @@
 # Embedded Robotic Hand Control
 
+[![Python interface checks](https://github.com/MartinScorza/embedded-robotic-hand-control/actions/workflows/python-interface-checks.yml/badge.svg)](https://github.com/MartinScorza/embedded-robotic-hand-control/actions/workflows/python-interface-checks.yml)
+[![Public release guard](https://github.com/MartinScorza/embedded-robotic-hand-control/actions/workflows/public-release-guard.yml/badge.svg)](https://github.com/MartinScorza/embedded-robotic-hand-control/actions/workflows/public-release-guard.yml)
+
 Academic embedded-systems and robotics project developed by a two-student team at Université de Technologie de Compiègne (UTC). The project integrates **two robotic hands with different control architectures** around an MSP432P401R microcontroller.
 
 - **DFRobot hand:** five servomotors driven directly by MSP432 hardware PWM, with joystick, FSR and digital force-sensor inputs.
@@ -7,9 +10,22 @@ Academic embedded-systems and robotics project developed by a two-student team a
 
 > This repository documents an educational robotics prototype. It is not a medical device, a clinically validated prosthesis, or a safety-certified control system.
 
+## What this project demonstrates
+
+- embedded C development on the MSP432P401R;
+- hardware PWM control of five servomotors using Timer_A;
+- ADC14 acquisition from joystick and force-sensitive resistor inputs;
+- SPI communication with a digital force sensor and a dedicated robotic-hand interface board;
+- UART communication between a Python desktop application and embedded firmware;
+- PI-based position control for a four-actuator hand architecture;
+- GPIO interrupts, SysTick scheduling, LCD/button/buzzer integration and hardware-facing debugging;
+- reconstruction and clean-build validation of a legacy embedded toolchain without user-specific paths.
+
+**Architecture and evidence:** [DFRobot architecture](hardware/diagrams/dfrobot-architecture.md) · [UTC architecture](hardware/diagrams/utc-architecture.md) · [PI control loop](hardware/diagrams/pi-control-loop.md) · [Validation evidence](docs/validation.md) · [Reproducibility](docs/reproducibility-status.md) · [Known limitations](docs/known-limitations.md)
+
 ## Project status
 
-The original academic project included a physical hardware demonstration. This portfolio repository preserves the public-safe parts of that work while separating verified implementation details from limitations and material whose redistribution rights are intentionally kept outside the public scope.
+The original academic project included a physical hardware demonstration. This portfolio repository preserves the public-safe parts of that work while separating verified implementation details from limitations and material intentionally kept outside the publication scope.
 
 The DFRobot application firmware and Python interface are included. Board-specific UTC interface firmware is withheld because the original project references internal UTC technical documentation.
 
@@ -38,6 +54,8 @@ The MSP432 directly controls five servomotors using hardware PWM. The firmware a
 
 The configured servo period is **20 ms (50 Hz)**, with command pulse widths constrained in the reviewed firmware to approximately **1000–1600 µs**.
 
+See the [detailed DFRobot architecture diagram](hardware/diagrams/dfrobot-architecture.md).
+
 ### UTC hand
 
 ```text
@@ -57,6 +75,8 @@ UTC interface board
 ```
 
 For the UTC hand, the MSP432 receives high-level commands from the Python application, reads actuator positions through the interface board, computes PI control commands, and exchanges motor-control values through SPI.
+
+See the [UTC architecture](hardware/diagrams/utc-architecture.md) and [PI control-loop diagram](hardware/diagrams/pi-control-loop.md).
 
 ## Technologies
 
@@ -124,12 +144,11 @@ The reviewed UTC firmware implements newline-terminated text commands at 9600 ba
 ```text
 firmware/
   dfrobot-hand/       Public-safe DFRobot application sources
-  utc-hand/           Publication-status placeholder for withheld low-level material
+  utc-hand/           Public-scope note for intentionally withheld low-level material
 python-interface/     Tkinter / pyserial PC interface
-hardware/             Public-safe pin mapping and hardware notes
-docs/                 Architecture, validation and known limitations
-media/                Portfolio media plan / future original evidence
-tests/                Reproducibility and validation plan
+hardware/             Pin mapping, requirements and original architecture diagrams
+docs/                 Architecture, validation, protocol notes and known limitations
+tests/                Reproducibility and future validation plan
 ```
 
 ## DFRobot hardware mapping

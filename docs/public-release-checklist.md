@@ -1,6 +1,6 @@
 # Public release checklist
 
-This checklist tracks the minimum evidence and governance required before changing this portfolio repository from private to public.
+This checklist records the publication boundary and validation status of the final portfolio version.
 
 ## Repository structure and hygiene
 
@@ -21,7 +21,10 @@ This checklist tracks the minimum evidence and governance required before changi
 - [x] Martín Scorza identified as `@MartinScorza`.
 - [x] Overall contribution recorded as **50/50**.
 - [x] No unsupported subsystem-by-subsystem individual ownership claims.
-- [ ] Add `@lorenzomazzante` as repository collaborator with write access.
+- [x] Repository invitation sent to `@lorenzomazzante` by the repository owner.
+- [ ] Lorenzo's accepted repository permission is visible through the GitHub integration. At the final audit, the API still reports `none`, which is consistent with an invitation that has not yet been accepted or propagated.
+
+The collaborator acceptance status is not a technical publication blocker because the authorship and equal contribution are already documented accurately in the repository.
 
 ## Third-party and UTC material
 
@@ -29,7 +32,7 @@ This checklist tracks the minimum evidence and governance required before changi
 - [x] DFRobot project origin from the TI BOOSTXL-EDUMKII example is documented.
 - [x] Internal UTC technical document excluded.
 - [x] UTC register map / low-level protocol excluded.
-- [x] Board-specific `Hand_*` low-level firmware excluded pending explicit provenance/redistribution evidence.
+- [x] Board-specific `Hand_*` low-level firmware excluded unless explicit provenance/redistribution evidence is obtained later.
 - [x] UTC logo excluded.
 - [x] Current decision: no repository-wide open-source license; `NOTICE.md` and `THIRD_PARTY_NOTICES.md` define the publication boundary.
 
@@ -62,46 +65,43 @@ Broader architectural findings remain documented rather than silently rewritten:
 - lack of explicit button debounce;
 - blocking UTC movement/communication behavior.
 
-## Hardware evidence
+## Hardware evidence boundary
 
-The current portfolio revision has not been newly flashed/re-tested on the original hardware. The original academic documentation remains the evidence for physical operation.
+The current portfolio revision has not been newly flashed or re-tested on the original hardware. The original academic report/presentation remains the evidence for the physical demonstration.
 
-Optional new validation if the hardware is still available:
+The repository therefore states only that:
 
-- [ ] confirm the DFRobot selector wiring used in the final setup;
-- [ ] verify five PWM outputs on hardware;
-- [ ] verify representative 50 Hz / 1000–1600 µs servo commands;
-- [ ] re-test joystick, FSR and FMA modes after the source fixes;
-- [ ] keep UTC control-loop frequency described as nominal 200 Hz unless it is measured end-to-end.
+- [x] the original academic project was demonstrated on physical hardware;
+- [x] the current DFRobot source is clean-build reproduced;
+- [x] no new hardware performance measurements are claimed.
 
-Lack of new physical access does not invalidate the portfolio release as long as the README keeps the distinction between the original hardware demonstration and the newly reproduced clean build.
+Additional oscilloscope, logic-analyzer or hardware re-test evidence is **not part of the final portfolio scope**.
 
-## Recruiter-facing media
+## Recruiter-facing visual evidence
 
-Tracked in Issue #6.
+The final portfolio intentionally does not republish photos from the academic report and does not add new photos, GIFs or videos.
 
-Minimum desirable set before public release:
+Instead, the repository provides original, rights-safe technical diagrams:
 
-- [ ] one short overview GIF/video showing the project hardware, if original footage is available;
-- [ ] one clean photo of the DFRobot setup, if available;
-- [ ] one clean public-safe photo or demo of the UTC-hand setup, if available;
-- [ ] one clean Python GUI screenshot;
-- [ ] original architecture diagrams or equivalent recruiter-readable visual explanation.
+- [x] DFRobot architecture diagram;
+- [x] UTC architecture diagram;
+- [x] PI control-loop diagram;
+- [x] recruiter-facing architecture links from the main README.
 
-The reviewed project archives do not contain original demo photos/videos apart from the excluded UTC logo. If external original media are unavailable, the repository may still be released with original/redrawn architecture diagrams and the documented original demonstration evidence.
+A detailed wiring/power schematic is intentionally omitted because the complete final external power/conditioning wiring cannot be verified from the preserved source material alone.
 
 ## Final publication review
 
-Before changing visibility to public:
-
-- [x] `main` contains only intended public-safe material.
+- [x] Repository content is limited to intended public-safe material.
 - [x] Python CI is green.
 - [x] Public-release guard is green.
-- [x] Critical deterministic DFRobot defects identified in Issue #3 are corrected and clean-build validated.
+- [x] Critical deterministic DFRobot defects are corrected and clean-build validated.
 - [x] README clearly distinguishes original physical demonstration from newly reproduced build evidence.
-- [ ] README contains no internal-work placeholders or stale validation statements.
-- [ ] Repository description and topics are finalized for embedded systems / robotics / biomedical-engineering portfolio discovery.
-- [ ] Lorenzo has repository access or has otherwise been informed/shared the repository as agreed by the team.
-- [ ] Recruiter-facing visual evidence is added where available.
+- [x] README contains no internal-work placeholders or stale validation statements identified during the final review.
+- [x] Repository description is recruiter-readable and technically accurate.
+- [x] Original architecture diagrams provide visual evidence without copying internal/vendor graphics.
 - [x] Repository remains clearly described as an academic robotics prototype, not a clinically validated device.
-- [ ] Final visibility change to **Public** is intentional.
+- [ ] GitHub repository topics are configured. The current API reports no topics; recommended values are listed in the final audit.
+- [ ] Repository visibility is intentionally changed from **Private** to **Public** when the owner is ready to publish it.
+
+The two unchecked items above are GitHub metadata/visibility actions rather than missing technical content.

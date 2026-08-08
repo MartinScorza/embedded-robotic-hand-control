@@ -1,0 +1,40 @@
+name: Apply DFRobot deterministic fixes
+
+on:
+  push:
+    branches:
+      - fix/dfrobot-deterministic-defects
+
+permissions:
+  contents: write
+
+jobs:
+  apply-fixes:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out fix branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/dfrobot-deterministic-defects
+
+      - name: Apply audited deterministic fixes
+        run: python scripts/apply_dfrobot_deterministic_fixes.py
+
+      - name: Validate patch formatting
+        run: git diff --check
+
+      - name: Commit source changes
+        shell: bash
+        run: |
+          if git diff --quiet -- firmware/dfrobot-hand/main.c firmware/dfrobot-hand/Fonctions.c; then
+            echo "No source changes required."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add firmware/dfrobot-hand/main.c firmware/dfrobot-hand/Fonctions.c
+          git commit -m "fix: correct deterministic DFRobot input defects"
+          git push origin HEAD:fix/dfrobot-deterministic-defects

@@ -2,9 +2,9 @@
 
 This repository documents an academic project completed by a two-student team:
 
-- Lorenzo Mazzante
-- Martín Scorza
+- Lorenzo Mazzante — GitHub: `@lorenzomazzante`
+- Martín Scorza — GitHub: `@MartinScorza`
 
 The original final report and application-specific DFRobot source files credit both students.
 
-A subsystem-by-subsystem individual contribution breakdown was not preserved clearly enough in the reviewed material to support exclusive authorship claims. Individual contribution statements should be added only after they are confirmed by the team.
+The project was completed with an **equal overall contribution (50/50)** from Lorenzo Mazzante and Martín Scorza. The preserved project material does not support a reliable subsystem-by-subsystem attribution, so this repository intentionally avoids assigning individual ownership of specific firmware, hardware, control, or interface components.

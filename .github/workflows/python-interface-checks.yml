@@ -1,0 +1,40 @@
+name: Python interface checks
+
+on:
+  pull_request:
+    paths:
+      - "python-interface/**"
+      - ".github/workflows/python-interface-checks.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "python-interface/**"
+      - ".github/workflows/python-interface-checks.yml"
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: python-interface/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r python-interface/requirements.txt
+          python -m pip check
+
+      - name: Verify pyserial
+        run: python -c "import serial; print('pyserial import OK')"
+
+      - name: Compile GUI source
+        run: python -m py_compile python-interface/robotic_hand_gui.py

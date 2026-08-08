@@ -12,6 +12,8 @@ import subprocess
 from pathlib import Path
 
 
+SELF_PATH = Path("scripts/check_public_tree.py")
+
 FORBIDDEN_PATH_PARTS = {
     "Debug",
     "Release",
@@ -72,6 +74,10 @@ def check_path(path: Path) -> list[str]:
 
 def check_content(path: Path) -> list[str]:
     problems: list[str] = []
+
+    # The guard source necessarily contains its own marker strings.
+    if path == SELF_PATH:
+        return problems
 
     try:
         data = path.read_bytes()

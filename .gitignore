@@ -1,0 +1,37 @@
+# Code Composer Studio generated output
+Debug/
+Release/
+**/Debug/
+**/Release/
+*.out
+*.obj
+*.map
+*.d
+*_linkInfo.xml
+ccsObjs.opt
+**/makefile
+**/objects.mk
+**/sources.mk
+**/subdir_rules.mk
+**/subdir_vars.mk
+
+# Local/debug launch settings
+.launches/
+*.launch
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local/archive material not intended for publication
+*.zip
+*.7z
+*.rar

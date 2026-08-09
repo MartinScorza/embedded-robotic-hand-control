@@ -242,9 +242,7 @@ This was a two-student academic project by:
 - **Lorenzo Mazzante** — `@lorenzomazzante`
 - **Martín Scorza** — `@MartinScorza`
 
-The project was completed with an **equal overall contribution (50/50)** from both students.
-
-The preserved source material does not provide a sufficiently reliable subsystem-by-subsystem contribution breakdown. To avoid unsupported individual claims, this repository therefore treats the implementation as collaborative work rather than assigning exclusive ownership of specific firmware, hardware, control or interface components.
+The project was developed collaboratively by both students. The preserved source material does not provide a sufficiently reliable subsystem-by-subsystem contribution breakdown, so this repository does not assign exclusive ownership of specific firmware, hardware, control or interface components.
 
 See [`AUTHORS.md`](AUTHORS.md).
 
